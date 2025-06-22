@@ -17,9 +17,10 @@ fn main() {
 }
 
 fn read_clue(hint: String) -> Clue {
-    let mut state: State = State::InNumber;
+    let mut state: State = State::InX;
     let mut clue: Clue = Clue {
-        number: 0,
+        x: 0,
+        y: 0,
         direction: Direction::Across,
         clue: String::new(),
     };
@@ -29,11 +30,19 @@ fn read_clue(hint: String) -> Clue {
     while index < chars.len() {
         let c = chars[index];
         match state {
-            State::InNumber => {
+            State::InX => {
                 if c.is_digit(10) {
-                    clue.number = clue.number * 10 + c.to_digit(10).unwrap();
+                    clue.x = clue.x * 10 + c.to_digit(10).unwrap();
                 } else {
                     state = State::InDirection;
+                    continue; // Reprocess this character as the direction
+                }
+            }
+            State::InY => {
+                if c.is_digit(10) {
+                    clue.y = clue.y * 10 + c.to_digit(10).unwrap();
+                } else {
+                    state = State::InClue;
                     continue; // Reprocess this character as the direction
                 }
             }
@@ -43,7 +52,7 @@ fn read_clue(hint: String) -> Clue {
                     'A' => Direction::Across,
                     _ => panic!("Invalid direction {}", c),
                 };
-                state = State::InClue;
+                state = State::InY;
             }
             State::InClue => {
                 clue.clue.push(c);
@@ -74,14 +83,16 @@ impl Display for Direction {
 
 #[derive(Eq, PartialEq, Debug)]
 pub enum State {
-    InNumber,
+    InX,
+    InY,
     InDirection,
     InClue,
 }
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Clue {
-    number: u32,
+    x: u32,
+    y: u32,
     direction: Direction,
     clue: String,
 }
@@ -89,8 +100,8 @@ impl Display for Clue {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Result: Number {}, Direction {}, Clue {}",
-            self.number, self.direction, self.clue
+            "({},{}) {}: {}",
+            self.x, self.y, self.direction, self.clue
         )
     }
 }
