@@ -17,15 +17,16 @@ fn main() {
         };
 
         let chars: Vec<char> = hint.chars().collect();
-        for c in chars {
-            print!("Processing {}", c);
-            state = match state {
+        let mut index = 0;
+        while index < chars.len() {
+            let c = chars[index];
+            match state {
                 State::InNumber => {
                     if c.is_digit(10) {
-                        clue.number = (clue.number * 10) + c.to_digit(10).unwrap();
-                        State::InNumber
+                        clue.number = clue.number * 10 + c.to_digit(10).unwrap();
                     } else {
-                        State::InDirection
+                        state = State::InDirection;
+                        continue; // Reprocess this character as the direction
                     }
                 }
                 State::InDirection => {
@@ -34,13 +35,13 @@ fn main() {
                         'A' => Direction::Across,
                         _ => panic!("Invalid direction {}", c),
                     };
-                    State::InClue
+                    state = State::InClue;
                 }
                 State::InClue => {
                     clue.clue.push(c);
-                    State::InClue
                 }
-            };
+            }
+            index += 1;
         }
         println!(
             "Result: Number {}, Direction {}, Clue {}",
