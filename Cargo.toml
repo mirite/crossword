@@ -1,0 +1,10 @@
+[package]
+name = "crossword"
+version = "0.1.0"
+edition = "2024"
+authors = ["Jesse Conner <me@jesseconner.ca>"]
+description = "A crossword SVG grid generator"
+license = "MIT"
+repository = "git@github.com:mirite/crossword.git"
+
+[dependencies]
