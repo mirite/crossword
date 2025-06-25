@@ -1,23 +1,11 @@
-use std::error;
-
 use crate::clue::{Clue, Direction};
-#[derive(Debug, thiserror::Error)]
-pub enum ClueParseError {
-    #[error("Invalid direction character: {0}")]
-    InvalidDirection(char),
-    #[error("Missing expected character")]
-    MissingCharacter,
-    #[error("Failed to parse number: {0}")]
-    NumberParseError(#[from] std::num::ParseIntError),
-    #[error("Unexpected end of input")]
-    UnexpectedEndOfInput,
-}
+
 pub fn read_clue(hint: String) -> Clue {
     let mut state: State = State::InX;
     let mut clue: Clue = Clue {
         x: 0,
         y: 0,
-        number: 1,
+        number: 0,
         direction: Direction::Across,
         clue: String::new(),
         answer: String::new(),
@@ -32,15 +20,14 @@ pub fn read_clue(hint: String) -> Clue {
                 if c.is_digit(10) {
                     clue.x = clue.x * 10 + c.to_digit(10).unwrap() as u8;
                 } else {
-                    state = State::InDirection;
-                    continue; // Reprocess this character as the direction
+                    state = State::InY;
                 }
             }
             State::InY => {
                 if c.is_digit(10) {
                     clue.y = clue.y * 10 + c.to_digit(10).unwrap() as u8;
                 } else {
-                    state = State::InClue;
+                    state = State::InDirection;
                     continue; // Reprocess this character as the direction
                 }
             }
@@ -50,7 +37,15 @@ pub fn read_clue(hint: String) -> Clue {
                     'A' => Direction::Across,
                     _ => panic!("Invalid direction {}", c),
                 };
-                state = State::InY;
+                state = State::InNumber;
+            }
+            State::InNumber => {
+                if c.is_digit(10) {
+                    clue.number = clue.number * 10 + c.to_digit(10).unwrap() as u8;
+                } else {
+                    state = State::InClue;
+                    continue; // Reprocess this character as the start of the clue
+                }
             }
             State::InClue => {
                 if c == ';' {
@@ -72,5 +67,6 @@ pub enum State {
     InY,
     InDirection,
     InClue,
+    InNumber,
     InAnswer,
 }
