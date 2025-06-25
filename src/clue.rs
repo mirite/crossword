@@ -2,11 +2,12 @@ use std::fmt::{Display, Formatter};
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Clue {
-    pub x: u32,
-    pub y: u32,
+    pub x: u8,
+    pub y: u8,
     pub direction: Direction,
     pub clue: String,
     pub answer: String,
+    pub number: u8,
 }
 impl Display for Clue {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

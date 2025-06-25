@@ -1,11 +1,12 @@
 mod clue;
+mod grid;
 mod input_parser;
 
 use clue::Clue;
 use input_parser::read_clue;
 use std::env;
 
-use crate::clue::Direction;
+use crate::{clue::Direction, grid::Grid};
 
 fn main() {
     let mut args = env::args();
@@ -16,25 +17,27 @@ fn main() {
         clues.push(read_clue(input));
     }
     let grid_size = get_grid_size(&clues);
-    for clue in clues {
-        println!("{}", clue);
-    }
-    println!("{}x{}", grid_size.0, grid_size.1)
+    let grid = Grid {
+        clues: clues,
+        width: grid_size.0,
+        height: grid_size.1,
+    };
+    println!("{}", grid);
 }
 
-fn get_grid_size(clues: &Vec<Clue>) -> (u32, u32) {
-    let mut max_x: u32 = 0;
-    let mut max_y: u32 = 0;
+fn get_grid_size(clues: &Vec<Clue>) -> (u8, u8) {
+    let mut max_x: u8 = 0;
+    let mut max_y: u8 = 0;
     for clue in clues {
         match clue.direction {
             Direction::Down => {
-                let y = clue.y + clue.answer.len() as u32;
+                let y = clue.y + clue.answer.len() as u8;
                 if y > max_y {
                     max_y = y;
                 }
             }
             Direction::Across => {
-                let x = clue.x + clue.answer.len() as u32;
+                let x = clue.x + clue.answer.len() as u8;
                 if x > max_x {
                     max_x = x;
                 }
