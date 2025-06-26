@@ -1,0 +1,12 @@
+5,1A1What is Fritz's First Name?;SNICKLE
+11,7D7Where was our first date?;KERNCLIFF
+1,8A8What was the first movie we watched together?;WAKANDAFOREVER
+4,2D3What instrument did Bailey claim she was going to teach Jesse?;PIANO
+5,14A11Where was Jesse when Bailey finally called to admit her feelings?;GOODLIFE
+8,1D2What flavour of pies did Bailey bake for Jesse on our first valentine’s day?;CHERRY
+6,12A10Where did we go on our first camping trip?;WINDYLAKE
+2,3D4What is our favourite French phrase?;TUMEMANQUES
+7,10A9Where did we go backpacking?;ALGONQUIN
+2,5A6What was our first Halloween costume together?;MONSTERSINC
+6,14D12What was the first type of plant that Jesse bought Bailey?;ORCHID
+7,3A5Where does Bailey volunteer?;PETSMART

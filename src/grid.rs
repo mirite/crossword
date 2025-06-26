@@ -3,7 +3,7 @@ use std::fmt::{Display, Formatter};
 use crate::clue::{Clue, Direction};
 
 const SQUARE_SIZE: usize = 32;
-const FONT_SIZE: f32 = 12.0;
+const FONT_SIZE: f32 = 14.0;
 
 pub struct Grid {
     pub clues: Vec<Clue>,
@@ -55,7 +55,7 @@ fn render_clue_squares(clue: &Clue) -> String {
         if index == 0 {
             content.push_str(&render_text(
                 &clue.number.to_string(),
-                x as usize * SQUARE_SIZE + 3,
+                x as usize * SQUARE_SIZE + 5,
                 y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) - 10,
                 Some(FONT_SIZE / 2.0),
             ));

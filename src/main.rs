@@ -4,17 +4,33 @@ mod input_parser;
 
 use clue::Clue;
 use input_parser::read_clue;
-use std::env;
+use std::io::{self, BufRead};
 
 use crate::{clue::Direction, grid::Grid};
 
 fn main() {
-    let mut args = env::args();
-    args.next();
-    let input_strings: Vec<String> = args.collect();
-    let mut clues: Vec<Clue> = Vec::with_capacity(input_strings.len());
-    for input in input_strings {
-        clues.push(read_clue(input));
+    let stdin = io::stdin();
+    let mut clues: Vec<Clue> = Vec::new();
+
+    for line in stdin.lock().lines() {
+        let line = match line {
+            Ok(l) => l,
+            Err(e) => {
+                eprintln!("Error reading line from stdin: {}", e);
+                continue;
+            }
+        };
+
+        if line.trim().is_empty() {
+            continue;
+        }
+
+        clues.push(read_clue(line));
+    }
+
+    if clues.is_empty() {
+        eprintln!("No clues were provided. Please pipe in a text file with clues.");
+        return;
     }
     let grid_size = get_grid_size(&clues);
     let grid = Grid {
