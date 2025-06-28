@@ -57,7 +57,7 @@ fn render_clue_squares(clue: &Clue) -> String {
                 &clue.number.to_string(),
                 x as usize * SQUARE_SIZE + 5,
                 y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) - 10,
-                Some(FONT_SIZE / 2.0),
+                Some(FONT_SIZE / 1.5),
             ));
         }
 
@@ -94,7 +94,7 @@ fn render_square(x: u8, y: u8) -> String {
 }
 fn render_square_answer(letter: char, x: u8, y: u8) -> String {
     let x_centre = x as usize * SQUARE_SIZE + (SQUARE_SIZE / 2);
-    let y_centre = y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) + 5;
+    let y_centre = y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) + 1;
     render_text(
         letter.to_string().as_str(),
         x_centre,
@@ -111,7 +111,7 @@ fn render_text(text: &str, x: usize, y: usize, font_size: Option<f32>) -> String
     };
 
     format!(
-        "<text stroke=\"#000000\" x=\"{}\" y=\"{}\" text-anchor=\"middle\" dominant-baseline=\"middle\" {}>{}</text>",
+        "<text x=\"{}\" y=\"{}\" text-anchor=\"middle\" font-weight=\"lighter\" dominant-baseline=\"middle\" font-family=\"Arial, Helvetica, sans-serif\" {}>{}</text>",
         x, y, font_size_attr, text
     )
 }
