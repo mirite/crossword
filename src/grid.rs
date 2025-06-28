@@ -3,7 +3,6 @@ use std::fmt::{Display, Formatter};
 use crate::clue::{Clue, Direction};
 
 const SQUARE_SIZE: usize = 32;
-const FONT_SIZE: f32 = 14.0;
 
 pub struct Grid {
     pub clues: Vec<Clue>,
@@ -21,7 +20,7 @@ impl Display for Grid {
 
         write!(
             f,
-            "<?xml version=\"1.0\" encoding=\"utf-8\"?><svg viewBox=\"0 0 {} {}\" xmlns=\"http://www.w3.org/2000/svg\">{}</svg>",
+            "<?xml version=\"1.0\" encoding=\"utf-8\"?><svg viewBox=\"0 0 {} {}\" xmlns=\"http://www.w3.org/2000/svg\"><style>text{{dominant-baseline:middle;}}.square{{fill:#FFFFFF;stroke:#000000;}}.answer{{ text-anchor:middle; font-family:Arial, Helvetica, sans-serif; font-weight:lighter;font-size:14px;}}.number{{font-size:8px;}}</style>{}</svg>",
             viewbox_width,
             viewbox_height,
             format!("{}{}", rendered_squares, rendered_answers)
@@ -57,7 +56,7 @@ fn render_clue_squares(clue: &Clue) -> String {
                 &clue.number.to_string(),
                 x as usize * SQUARE_SIZE + 5,
                 y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) - 10,
-                Some(FONT_SIZE / 1.5),
+                Some(String::from("number")),
             ));
         }
 
@@ -88,7 +87,7 @@ fn render_square(x: u8, y: u8) -> String {
     let x_root = x as usize * SQUARE_SIZE;
     let y_root = y as usize * SQUARE_SIZE;
     format!(
-        "<rect width=\"{}\" height=\"{}\" x=\"{}\" y=\"{}\" fill=\"#FFFFFF\" stroke=\"#000000\"></rect>",
+        "<rect width=\"{}\" height=\"{}\" x=\"{}\" y=\"{}\" class=\"square\"></rect>",
         SQUARE_SIZE, SQUARE_SIZE, x_root, y_root
     )
 }
@@ -99,19 +98,19 @@ fn render_square_answer(letter: char, x: u8, y: u8) -> String {
         letter.to_string().as_str(),
         x_centre,
         y_centre,
-        Some(FONT_SIZE),
+        Some(String::from("answer")),
     )
 }
 /// Renders an SVG text element.
-fn render_text(text: &str, x: usize, y: usize, font_size: Option<f32>) -> String {
-    let font_size_attr = if let Some(size) = font_size {
-        format!("font-size=\"{}\"", size)
+fn render_text(text: &str, x: usize, y: usize, class: Option<String>) -> String {
+    let class_attr = if let Some(class_name) = class {
+        format!("class=\"{}\"", class_name)
     } else {
         String::new()
     };
 
     format!(
-        "<text x=\"{}\" y=\"{}\" text-anchor=\"middle\" font-weight=\"lighter\" dominant-baseline=\"middle\" font-family=\"Arial, Helvetica, sans-serif\" {}>{}</text>",
-        x, y, font_size_attr, text
+        "<text x=\"{}\" y=\"{}\" {}>{}</text>",
+        x, y, class_attr, text
     )
 }
