@@ -46,8 +46,9 @@ fn render_clue_squares(clue: &Clue) -> String {
     let mut content = String::new();
     let mut x = clue.x;
     let mut y = clue.y;
+    let letters = clue.base.answer.chars().enumerate();
 
-    for (index, _) in clue.answer.chars().enumerate() {
+    for (index, _) in letters {
         content.push_str(&render_square(x, y));
 
         // Only add the clue number for the first square.
@@ -72,8 +73,9 @@ fn render_answer(clue: &Clue) -> String {
     let mut content = String::new();
     let mut x = clue.x;
     let mut y = clue.y;
+    let letters = clue.base.answer.chars();
 
-    for letter in clue.answer.chars() {
+    for letter in letters {
         content.push_str(&render_square_answer(letter, x, y));
         match clue.direction {
             Direction::Down => y += 1,

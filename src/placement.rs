@@ -1,8 +1,23 @@
 use crate::clue::Clue;
 
+#[derive(Clone, Copy)]
+union SquareValue {
+    char: char,
+    blank: bool,
+}
+
+#[derive(Eq, PartialEq, Debug)]
+pub struct BaseClue {
+    pub clue: String,
+    pub answer: String,
+}
+
 pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
-    sort(lines);
-    vec![]
+    let sorted = sort(lines);
+    let size: usize = sorted[0].len();
+    let grid: Vec<Vec<Option<SquareValue>>> = vec![vec![None; size]; size];
+    let mut clues: Vec<Clue> = vec![];
+    clues
 }
 
 fn sort(mut strings: Vec<String>) -> Vec<String> {

@@ -27,7 +27,7 @@ fn get_grid_size(clues: &Vec<Clue>) -> (u8, u8) {
     for clue in clues {
         match clue.direction {
             Direction::Down => {
-                let y = clue.y + clue.answer.len() as u8 - 1;
+                let y = clue.y + clue.base.answer.len() as u8 - 1;
                 if y > max_y {
                     max_y = y;
                 }
@@ -36,7 +36,7 @@ fn get_grid_size(clues: &Vec<Clue>) -> (u8, u8) {
                 }
             }
             Direction::Across => {
-                let x = clue.x + clue.answer.len() as u8 - 1;
+                let x = clue.x + clue.base.answer.len() as u8 - 1;
                 if x > max_x {
                     max_x = x;
                 }
@@ -51,6 +51,8 @@ fn get_grid_size(clues: &Vec<Clue>) -> (u8, u8) {
 
 #[cfg(test)]
 mod tests {
+    use crate::placement::BaseClue;
+
     use super::*;
 
     #[test]
@@ -67,16 +69,20 @@ mod tests {
                 direction: Direction::Down,
                 x: 10,
                 y: 10,
-                clue: String::from("Clue"),
-                answer: String::from("ANSWER"),
+                base: BaseClue {
+                    clue: String::from("Clue"),
+                    answer: String::from("ANSWER"),
+                },
                 number: 2,
             },
             Clue {
                 direction: Direction::Down,
                 x: 0,
                 y: 0,
-                clue: String::from("Clue"),
-                answer: String::from("ANSWERTWO"),
+                base: BaseClue {
+                    clue: String::from("Clue"),
+                    answer: String::from("ANSWERTWO"),
+                },
                 number: 1,
             },
         ]);

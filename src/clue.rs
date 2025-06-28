@@ -1,12 +1,13 @@
 use std::fmt::{Display, Formatter};
 
+use crate::placement::BaseClue;
+
 #[derive(Eq, PartialEq, Debug)]
 pub struct Clue {
     pub x: u8,
     pub y: u8,
     pub direction: Direction,
-    pub clue: String,
-    pub answer: String,
+    pub base: BaseClue,
     pub number: u8,
 }
 impl Display for Clue {
@@ -14,7 +15,7 @@ impl Display for Clue {
         write!(
             f,
             "({},{}) {}: {}\n\t{}",
-            self.x, self.y, self.direction, self.clue, self.answer
+            self.x, self.y, self.direction, self.base.clue, self.base.answer
         )
     }
 }

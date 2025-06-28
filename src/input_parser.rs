@@ -1,4 +1,7 @@
-use crate::clue::{Clue, Direction};
+use crate::{
+    clue::{Clue, Direction},
+    placement::BaseClue,
+};
 
 pub fn read_clue(hint: String) -> Clue {
     let mut state: State = State::InX;
@@ -7,8 +10,10 @@ pub fn read_clue(hint: String) -> Clue {
         y: 0,
         number: 0,
         direction: Direction::Across,
-        clue: String::new(),
-        answer: String::new(),
+        base: BaseClue {
+            clue: String::new(),
+            answer: String::new(),
+        },
     };
 
     let chars: Vec<char> = hint.chars().collect();
@@ -51,10 +56,10 @@ pub fn read_clue(hint: String) -> Clue {
                 if c == ';' {
                     state = State::InAnswer;
                 } else {
-                    clue.clue.push(c);
+                    clue.base.clue.push(c);
                 }
             }
-            State::InAnswer => clue.answer.push(c),
+            State::InAnswer => clue.base.answer.push(c),
         }
         index += 1;
     }
