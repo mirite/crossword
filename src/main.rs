@@ -1,37 +1,17 @@
 mod clue;
 mod grid;
 mod input_parser;
+mod placement;
 
 use clue::Clue;
-use input_parser::read_clue;
 use std::io::{self, BufRead};
 
-use crate::{clue::Direction, grid::Grid};
+use crate::{clue::Direction, grid::Grid, placement::place_clues};
 
 fn main() {
     let stdin = io::stdin();
-    let mut clues: Vec<Clue> = Vec::new();
-
-    for line in stdin.lock().lines() {
-        let line = match line {
-            Ok(l) => l,
-            Err(e) => {
-                eprintln!("Error reading line from stdin: {}", e);
-                continue;
-            }
-        };
-
-        if line.trim().is_empty() {
-            continue;
-        }
-
-        clues.push(read_clue(line));
-    }
-
-    if clues.is_empty() {
-        eprintln!("No clues were provided. Please pipe in a text file with clues.");
-        return;
-    }
+    let lines = stdin.lock().lines().filter_map(|l| l.ok()).collect();
+    let clues: Vec<Clue> = place_clues(lines);
     let grid_size = get_grid_size(&clues);
     let grid = Grid {
         clues: clues,
@@ -42,23 +22,65 @@ fn main() {
 }
 
 fn get_grid_size(clues: &Vec<Clue>) -> (u8, u8) {
-    let mut max_x: u8 = 0;
-    let mut max_y: u8 = 0;
+    let mut max_x: u8 = 1;
+    let mut max_y: u8 = 1;
     for clue in clues {
         match clue.direction {
             Direction::Down => {
-                let y = clue.y + clue.answer.len() as u8;
+                let y = clue.y + clue.answer.len() as u8 - 1;
                 if y > max_y {
                     max_y = y;
                 }
+                if clue.x > max_x {
+                    max_x = clue.x;
+                }
             }
             Direction::Across => {
-                let x = clue.x + clue.answer.len() as u8;
+                let x = clue.x + clue.answer.len() as u8 - 1;
                 if x > max_x {
                     max_x = x;
+                }
+                if clue.y > max_y {
+                    max_y = clue.y;
                 }
             }
         }
     }
     (max_x, max_y)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn defaults_correctly() {
+        let (x, y) = get_grid_size(&vec![]);
+        assert_eq!(x, 1);
+        assert_eq!(y, 1);
+    }
+
+    #[test]
+    fn counts_correctly() {
+        let (x, y) = get_grid_size(&vec![
+            Clue {
+                direction: Direction::Down,
+                x: 10,
+                y: 10,
+                clue: String::from("Clue"),
+                answer: String::from("ANSWER"),
+                number: 2,
+            },
+            Clue {
+                direction: Direction::Down,
+                x: 0,
+                y: 0,
+                clue: String::from("Clue"),
+                answer: String::from("ANSWERTWO"),
+                number: 1,
+            },
+        ]);
+        assert_eq!(x, 10);
+        assert_eq!(y, 15);
+    }
 }
