@@ -1,4 +1,5 @@
 mod clue;
+mod clue_sorting;
 mod grid;
 mod input_parser;
 mod placement;
