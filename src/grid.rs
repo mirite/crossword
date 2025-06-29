@@ -12,8 +12,8 @@ pub struct Grid {
 
 impl Display for Grid {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let viewbox_width: usize = self.width as usize * SQUARE_SIZE;
-        let viewbox_height: usize = self.height as usize * SQUARE_SIZE;
+        let viewbox_width: usize = (1 + self.width as usize) * SQUARE_SIZE;
+        let viewbox_height: usize = (1 + self.height as usize) * SQUARE_SIZE;
 
         let rendered_squares = render_squares(&self.clues);
         let rendered_answers = render_answers(&self.clues);
