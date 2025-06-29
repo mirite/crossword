@@ -1,3 +1,4 @@
+mod can_place;
 mod clue;
 mod clue_sorting;
 mod grid;
