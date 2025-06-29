@@ -58,6 +58,26 @@ fn place_word(
     let current_answer = &current_clue.answer;
     let height = grid.len();
     let width = grid[0].len();
+    if is_first_word {
+        let (x, y, direction) = (0, 0, Direction::Across);
+        let next_grid = write_word_to_grid(&grid, current_answer, x, y, &direction);
+        result.push(Clue {
+            base: BaseClue {
+                clue: current_clue.clue.clone(),
+                answer: current_answer.clone(),
+            },
+            x: x as u8,
+            y: y as u8,
+            direction,
+            number: 1,
+        });
+
+        if place_word(word_index + 1, next_grid, clues, result) {
+            return true;
+        }
+
+        result.pop(); // Backtrack
+    }
     for y in 0..height {
         for x in 0..width {
             for direction in [Direction::Across, Direction::Down] {
