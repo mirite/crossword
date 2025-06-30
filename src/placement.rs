@@ -30,7 +30,7 @@ pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
         })
         .collect();
     let sorted = sort(pairs);
-    let size: usize = sorted[0].answer.len();
+    let size: usize = sorted[0].answer.len() * 2;
     let initial_grid = vec![vec![SquareValue::Blank; size]; size];
     let mut clues: Vec<Clue> = vec![];
     let success = place_word(0, initial_grid, &sorted, &mut clues);
@@ -58,30 +58,10 @@ fn place_word(
     let current_answer = &current_clue.answer;
     let height = grid.len();
     let width = grid[0].len();
-    if is_first_word {
-        let (x, y, direction) = (0, 0, Direction::Across);
-        let next_grid = write_word_to_grid(&grid, current_answer, x, y, &direction);
-        result.push(Clue {
-            base: BaseClue {
-                clue: current_clue.clue.clone(),
-                answer: current_answer.clone(),
-            },
-            x: x as u8,
-            y: y as u8,
-            direction,
-            number: 1,
-        });
-
-        if place_word(word_index + 1, next_grid, clues, result) {
-            return true;
-        }
-
-        result.pop(); // Backtrack
-    }
     for y in 0..height {
         for x in 0..width {
             for direction in [Direction::Across, Direction::Down] {
-                if can_place(current_answer, &grid, x, y, &direction, false) {
+                if can_place(current_answer, &grid, x, y, &direction, is_first_word) {
                     let next_grid = write_word_to_grid(&grid, current_answer, x, y, &direction);
                     result.push(Clue {
                         base: BaseClue {
