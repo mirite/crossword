@@ -30,18 +30,20 @@ pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
         })
         .collect();
     let sorted = sort(pairs);
-    let size: usize = sorted[0].answer.len() + 2;
-    let initial_grid = vec![vec![SquareValue::Blank; size]; size];
-    let mut clues: Vec<Clue> = vec![];
-    let success = place_word(0, initial_grid, &sorted, &mut clues);
-    if success != true {
-        panic!(
-            "Failed to place the {} clues. The longest word was {}.",
-            sorted.len(),
-            sorted[0].answer
-        );
+    for bonus_squares in 0..sorted[0].answer.len() * 2 {
+        let size: usize = sorted[0].answer.len() + bonus_squares;
+        let initial_grid = vec![vec![SquareValue::Blank; size]; size];
+        let mut clues: Vec<Clue> = vec![];
+        let success = place_word(0, initial_grid, &sorted, &mut clues);
+        if success == true {
+            return clues;
+        }
     }
-    clues
+    panic!(
+        "Failed to place the {} clues. The longest word was {}.",
+        sorted.len(),
+        sorted[0].answer
+    );
 }
 
 fn place_word(
@@ -105,7 +107,7 @@ fn write_word_to_grid(grid: &Grid, word: &str, x: usize, y: usize, direction: &D
         }
         Direction::Down => {
             if y > 0 {
-                new_grid[y][x - 1] = SquareValue::Black;
+                new_grid[y - 1][x] = SquareValue::Black;
             }
             if y + word.len() < grid.len() - 1 {
                 new_grid[y + word.len()][x] = SquareValue::Black;
