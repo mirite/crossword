@@ -1,6 +1,5 @@
 What is Fritz's First Name?;SNICKLEFRITZ
 Where was our first date?;KERNCLIFF
-What was the first movie we watched together?;WAKANDAFOREVER
 What instrument did Bailey claim she was going to teach Jesse?;PIANO
 Where was Jesse when Bailey finally called to admit her feelings?;GOODLIFE
 What flavour of pies did Bailey bake for Jesse on our first valentine’s day?;CHERRY
