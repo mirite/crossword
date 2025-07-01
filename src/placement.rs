@@ -75,7 +75,7 @@ fn place_word(
                     });
                     let next_result = place_word(word_index + 1, next_grid, clues, result);
                     if next_result.is_ok() == true {
-                        return Ok(grid);
+                        return next_result;
                     }
 
                     result.pop();
