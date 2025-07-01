@@ -56,7 +56,7 @@ fn render_clue_squares(clue: &Clue) -> String {
             content.push_str(&render_text(
                 &clue.number.to_string(),
                 x * SQUARE_SIZE + 5,
-                y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) - 10,
+                y * SQUARE_SIZE + (SQUARE_SIZE / 2) - 8,
                 Some(String::from("number")),
             ));
         }
@@ -95,7 +95,7 @@ fn render_square(x: usize, y: usize) -> String {
 }
 fn render_square_answer(letter: char, x: usize, y: usize) -> String {
     let x_centre = x * SQUARE_SIZE + (SQUARE_SIZE / 2);
-    let y_centre = y * SQUARE_SIZE + (SQUARE_SIZE / 2) + 1;
+    let y_centre = y * SQUARE_SIZE + (SQUARE_SIZE / 2) + 2;
     render_text(
         letter.to_string().as_str(),
         x_centre,
