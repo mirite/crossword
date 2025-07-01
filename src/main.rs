@@ -13,14 +13,18 @@ use crate::{clue::Direction, placement::place_clues, render::Grid};
 fn main() {
     let stdin = io::stdin();
     let lines = stdin.lock().lines().filter_map(|l| l.ok()).collect();
-    let clues: Vec<Clue> = place_clues(lines);
-    let grid_size = get_grid_size(&clues);
-    let grid = Grid {
-        clues: clues,
-        width: grid_size.0,
-        height: grid_size.1,
-    };
-    println!("{}", grid);
+    match place_clues(lines) {
+        Ok(clues) => {
+            let grid_size = get_grid_size(&clues);
+            let grid = Grid {
+                clues: clues,
+                width: grid_size.0,
+                height: grid_size.1,
+            };
+            println!("{}", grid);
+        }
+        Err(e) => println!("Failed to generate grid: {}", e),
+    }
 }
 
 fn get_grid_size(clues: &Vec<Clue>) -> (usize, usize) {

@@ -19,7 +19,7 @@ pub struct BaseClue {
     pub answer: String,
 }
 
-pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
+pub fn place_clues(lines: Vec<String>) -> Result<Vec<Clue>, String> {
     let pairs = lines
         .iter()
         .map(|line| {
@@ -38,14 +38,14 @@ pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
         let result_for_size = place_word(0, initial_grid, &sorted, &mut clues);
         if result_for_size.is_ok() == true {
             assign_clue_numbers(&result_for_size.unwrap(), &mut clues);
-            return clues;
+            return Ok(clues);
         }
     }
-    panic!(
+    Err(format!(
         "Failed to place the {} clues. The longest word was {}.",
         sorted.len(),
         sorted[0].answer
-    );
+    ))
 }
 
 fn place_word(
