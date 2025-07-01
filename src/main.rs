@@ -12,7 +12,7 @@ use crate::{clue::Direction, placement::place_clues, render::Grid};
 
 fn main() {
     let stdin = io::stdin();
-    let lines = stdin.lock().lines().filter_map(|l| l.ok()).collect();
+    let lines: Vec<String> = stdin.lock().lines().filter_map(Result::ok).collect();
     match place_clues(lines) {
         Ok(clues) => {
             let grid_size = get_grid_size(&clues);
@@ -33,22 +33,14 @@ fn get_grid_size(clues: &Vec<Clue>) -> (usize, usize) {
     for clue in clues {
         match clue.direction {
             Direction::Down => {
-                let y = clue.y + clue.base.answer.len() - 1;
-                if y > max_y {
-                    max_y = y;
-                }
-                if clue.x > max_x {
-                    max_x = clue.x;
-                }
+                let current_y_extent = clue.y + clue.base.answer.len();
+                max_y = max_y.max(current_y_extent);
+                max_x = max_x.max(clue.x + 1); // +1 because x is a coordinate, and we need the dimension
             }
             Direction::Across => {
-                let x = clue.x + clue.base.answer.len() - 1;
-                if x > max_x {
-                    max_x = x;
-                }
-                if clue.y > max_y {
-                    max_y = clue.y;
-                }
+                let current_x_extent = clue.x + clue.base.answer.len();
+                max_y = max_y.max(clue.y + 1);
+                max_x = current_x_extent;
             }
         }
     }
@@ -73,8 +65,8 @@ mod tests {
         let (x, y) = get_grid_size(&vec![
             Clue {
                 direction: Direction::Down,
-                x: 10,
-                y: 10,
+                x: 9,
+                y: 9,
                 base: BaseClue {
                     clue: String::from("Clue"),
                     answer: String::from("ANSWER"),
