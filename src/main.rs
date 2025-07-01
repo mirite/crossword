@@ -1,8 +1,8 @@
 mod can_place;
 mod clue;
+mod clue_numbering;
 mod clue_sorting;
 mod grid;
-mod input_parser;
 mod placement;
 
 use clue::Clue;
