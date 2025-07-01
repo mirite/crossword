@@ -6,14 +6,14 @@ const SQUARE_SIZE: usize = 32;
 
 pub struct Grid {
     pub clues: Vec<Clue>,
-    pub width: u8,
-    pub height: u8,
+    pub width: usize,
+    pub height: usize,
 }
 
 impl Display for Grid {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        let viewbox_width: usize = (1 + self.width as usize) * SQUARE_SIZE;
-        let viewbox_height: usize = (1 + self.height as usize) * SQUARE_SIZE;
+        let viewbox_width: usize = (1 + self.width) * SQUARE_SIZE;
+        let viewbox_height: usize = (1 + self.height) * SQUARE_SIZE;
 
         let rendered_squares = render_squares(&self.clues);
         let rendered_answers = render_answers(&self.clues);
@@ -55,7 +55,7 @@ fn render_clue_squares(clue: &Clue) -> String {
         if index == 0 {
             content.push_str(&render_text(
                 &clue.number.to_string(),
-                x as usize * SQUARE_SIZE + 5,
+                x * SQUARE_SIZE + 5,
                 y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) - 10,
                 Some(String::from("number")),
             ));
@@ -85,17 +85,17 @@ fn render_answer(clue: &Clue) -> String {
     content
 }
 /// Renders a single white square with a black stroke.
-fn render_square(x: u8, y: u8) -> String {
+fn render_square(x: usize, y: usize) -> String {
     let x_root = x as usize * SQUARE_SIZE;
-    let y_root = y as usize * SQUARE_SIZE;
+    let y_root = y * SQUARE_SIZE;
     format!(
         "<rect width=\"{}\" height=\"{}\" x=\"{}\" y=\"{}\" class=\"square\"></rect>",
         SQUARE_SIZE, SQUARE_SIZE, x_root, y_root
     )
 }
-fn render_square_answer(letter: char, x: u8, y: u8) -> String {
-    let x_centre = x as usize * SQUARE_SIZE + (SQUARE_SIZE / 2);
-    let y_centre = y as usize * SQUARE_SIZE + (SQUARE_SIZE / 2) + 1;
+fn render_square_answer(letter: char, x: usize, y: usize) -> String {
+    let x_centre = x * SQUARE_SIZE + (SQUARE_SIZE / 2);
+    let y_centre = y * SQUARE_SIZE + (SQUARE_SIZE / 2) + 1;
     render_text(
         letter.to_string().as_str(),
         x_centre,

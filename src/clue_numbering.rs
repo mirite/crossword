@@ -7,10 +7,8 @@ pub fn assign_clue_numbers(grid: &Grid, clues: &mut Vec<Clue>) {
     let height = grid.len();
     let width = grid[0].len();
     let mut current_number = 1;
-    let mut numbered_cells: Vec<Vec<u8>> = vec![vec![0; width]; height]; // Stores the assigned number for each cell
+    let mut numbered_cells: Vec<Vec<usize>> = vec![vec![0; width]; height];
 
-    // First pass: Determine which cells get a number
-    // and assign the numbers to the numbered_cells grid
     for y in 0..height {
         for x in 0..width {
             let mut is_start_of_across = false;
@@ -41,20 +39,15 @@ pub fn assign_clue_numbers(grid: &Grid, clues: &mut Vec<Clue>) {
 
             // A square gets a number if it's the start of *either* an Across or Down word
             if is_start_of_across || is_start_of_down {
-                numbered_cells[y][x] = current_number as u8;
+                numbered_cells[y][x] = current_number;
                 current_number += 1;
             }
         }
     }
 
-    // Second pass: Assign these numbers to the actual Clue objects
-    // Now, we need to iterate through the clues that were *actually placed*
-    // and assign them their corresponding number from numbered_cells.
     for clue in clues.iter_mut() {
-        // Only assign a number if the cell in numbered_cells is not 0 (meaning it's a valid starting point)
-        clue.number = numbered_cells[clue.y as usize][clue.x as usize];
+        clue.number = numbered_cells[clue.y][clue.x];
     }
 
-    // Sort the clues by their assigned number for proper display
     clues.sort_by_key(|c| c.number);
 }

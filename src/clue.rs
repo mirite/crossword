@@ -4,11 +4,11 @@ use crate::placement::BaseClue;
 
 #[derive(Eq, PartialEq, Debug)]
 pub struct Clue {
-    pub x: u8,
-    pub y: u8,
+    pub x: usize,
+    pub y: usize,
     pub direction: Direction,
     pub base: BaseClue,
-    pub number: u8,
+    pub number: usize,
 }
 impl Display for Clue {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {

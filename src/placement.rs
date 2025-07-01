@@ -35,10 +35,9 @@ pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
         let size: usize = sorted[0].answer.len() + bonus_squares;
         let initial_grid = vec![vec![SquareValue::Blank; size]; size];
         let mut clues: Vec<Clue> = vec![];
-        let mut final_grid = initial_grid.clone();
-        let success = place_word(0, initial_grid, &sorted, &mut clues, &mut final_grid);
-        if success == true {
-            assign_clue_numbers(&final_grid, &mut clues);
+        let result_for_size = place_word(0, initial_grid, &sorted, &mut clues);
+        if result_for_size.is_ok() == true {
+            assign_clue_numbers(&result_for_size.unwrap(), &mut clues);
             return clues;
         }
     }
@@ -51,16 +50,13 @@ pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
 
 fn place_word(
     word_index: usize,
-    grid: Grid, // This grid is for the current recursive step
+    grid: Grid,
     clues: &Vec<BaseClue>,
     result: &mut Vec<Clue>,
-    final_grid_ref: &mut Grid, // New parameter to pass the final grid back
-) -> bool {
+) -> Result<Grid, bool> {
     if word_index == clues.len() {
-        *final_grid_ref = grid; // Assign the current successful grid to the final_grid_ref
-        return true;
+        return Ok(grid);
     }
-    let is_first_word = word_index == 0;
     let current_clue = &clues[word_index];
     let current_answer = &current_clue.answer;
     let height = grid.len();
@@ -68,22 +64,18 @@ fn place_word(
     for y in 0..height {
         for x in 0..width {
             for direction in [Direction::Across, Direction::Down] {
-                if can_place(current_answer, &grid, x, y, &direction, is_first_word) {
+                if can_place(current_answer, &grid, x, y, &direction, word_index == 0) {
                     let next_grid = write_word_to_grid(&grid, current_answer, x, y, &direction);
                     result.push(Clue {
-                        base: BaseClue {
-                            clue: current_clue.clue.clone(),
-                            answer: current_answer.clone(),
-                        },
-                        x: x as u8,
-                        y: y as u8,
+                        base: current_clue.clone(),
+                        x,
+                        y,
                         direction,
-                        number: 0, // Initialize with 0 or a placeholder, it will be updated later
+                        number: 0,
                     });
-
-                    // Pass the final_grid_ref down the recursion
-                    if place_word(word_index + 1, next_grid, clues, result, final_grid_ref) {
-                        return true;
+                    let next_result = place_word(word_index + 1, next_grid, clues, result);
+                    if next_result.is_ok() == true {
+                        return Ok(grid);
                     }
 
                     result.pop();
@@ -91,9 +83,10 @@ fn place_word(
             }
         }
     }
-    false
+    Err(false)
 }
 
+/// Block off the squares the word should occupy.
 fn write_word_to_grid(grid: &Grid, word: &str, x: usize, y: usize, direction: &Direction) -> Grid {
     let mut new_grid = grid.clone();
     for (i, char) in word.chars().enumerate() {

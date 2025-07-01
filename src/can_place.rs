@@ -1,11 +1,6 @@
 use crate::{clue::Direction, placement::Grid, placement::SquareValue};
 
 /// Checks if a word can be placed on the grid at a given position and direction.
-///
-/// This function checks for:
-/// 1. Grid boundaries: Does the word fit?
-/// 2. Adjacency: Are the squares before and after the word empty or black?
-/// 3. Intersections: Does it align with existing characters?
 pub fn can_place(
     answer: &str,
     grid: &Grid,
@@ -27,24 +22,24 @@ pub fn can_place(
         Direction::Across => {
             if x > 0 {
                 if let SquareValue::Char(_) = grid[y][x - 1] {
-                    return false; // Adjacent char to the left
+                    return false;
                 }
             }
             if x + word_len < grid_width {
                 if let SquareValue::Char(_) = grid[y][x + word_len] {
-                    return false; // Adjacent char to the right
+                    return false;
                 }
             }
         }
         Direction::Down => {
             if y > 0 {
                 if let SquareValue::Char(_) = grid[y - 1][x] {
-                    return false; // Adjacent char above
+                    return false;
                 }
             }
             if y + word_len < grid_height {
                 if let SquareValue::Char(_) = grid[y + word_len][x] {
-                    return false; // Adjacent char below
+                    return false;
                 }
             }
         }
@@ -56,11 +51,6 @@ pub fn can_place(
             Direction::Across => (x + i, y),
             Direction::Down => (x, y + i),
         };
-
-        // 5. --- Parallelism Check ---
-        // For each letter, check the perpendicular cells. If they contain a character,
-        // it means we are placing a word right next to an existing one, which is invalid.
-        // The only time a perpendicular cell can have a character is if it's an intersection.
         let is_intersection = matches!(grid[curr_y][curr_x], SquareValue::Char(_));
 
         if !is_intersection {
@@ -88,21 +78,19 @@ pub fn can_place(
             }
         }
 
-        // 3. --- Intersection Check ---
         match grid[curr_y][curr_x] {
-            SquareValue::Black => return false, // Can't place over a black square.
+            SquareValue::Black => return false,
             SquareValue::Blank => { /* This spot is open, which is fine. */ }
             SquareValue::Char(existing_char) => {
                 if existing_char == answer_char {
-                    intersects = true; // This is a valid intersection.
+                    intersects = true;
                 } else {
-                    return false; // The characters do not match.
+                    return false;
                 }
             }
         }
     }
 
-    // 4. --- Connectivity Check ---
     // The placement is valid only if it's the first word on the grid OR
     // it connects to at least one existing word.
     is_grid_empty || intersects

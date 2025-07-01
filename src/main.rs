@@ -2,13 +2,13 @@ mod can_place;
 mod clue;
 mod clue_numbering;
 mod clue_sorting;
-mod grid;
 mod placement;
+mod render;
 
 use clue::Clue;
 use std::io::{self, BufRead};
 
-use crate::{clue::Direction, grid::Grid, placement::place_clues};
+use crate::{clue::Direction, placement::place_clues, render::Grid};
 
 fn main() {
     let stdin = io::stdin();
@@ -23,13 +23,13 @@ fn main() {
     println!("{}", grid);
 }
 
-fn get_grid_size(clues: &Vec<Clue>) -> (u8, u8) {
-    let mut max_x: u8 = 1;
-    let mut max_y: u8 = 1;
+fn get_grid_size(clues: &Vec<Clue>) -> (usize, usize) {
+    let mut max_x: usize = 1;
+    let mut max_y: usize = 1;
     for clue in clues {
         match clue.direction {
             Direction::Down => {
-                let y = clue.y + clue.base.answer.len() as u8 - 1;
+                let y = clue.y + clue.base.answer.len() - 1;
                 if y > max_y {
                     max_y = y;
                 }
@@ -38,7 +38,7 @@ fn get_grid_size(clues: &Vec<Clue>) -> (u8, u8) {
                 }
             }
             Direction::Across => {
-                let x = clue.x + clue.base.answer.len() as u8 - 1;
+                let x = clue.x + clue.base.answer.len() - 1;
                 if x > max_x {
                     max_x = x;
                 }
