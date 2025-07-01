@@ -30,7 +30,7 @@ pub fn place_clues(lines: Vec<String>) -> Vec<Clue> {
         })
         .collect();
     let sorted = sort(pairs);
-    let size: usize = sorted[0].answer.len() * 2;
+    let size: usize = sorted[0].answer.len() + 2;
     let initial_grid = vec![vec![SquareValue::Blank; size]; size];
     let mut clues: Vec<Clue> = vec![];
     let success = place_word(0, initial_grid, &sorted, &mut clues);
